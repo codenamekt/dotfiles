@@ -1,0 +1,14 @@
+*
+!tmux/
+!zsh/
+!vim/
+!nvim/
+!bootstrap.sh
+!README.md
+!.gitignore
+
+tmux/.tmux/plugins/
+zsh/.oh-my-zsh/custom/plugins/
+zsh/.oh-my-zsh/custom/themes/
+vim/.vim/plugged/
+nvim/.local/share/nvim/lazy/
