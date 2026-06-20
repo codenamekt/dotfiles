@@ -1,14 +1,21 @@
+# Ignore everything by default; explicitly allow tracked repo files and Stow package contents.
 *
+
+!.gitignore
+!README.md
+!bootstrap.sh
+
 !tmux/
-!zsh/
 !vim/
 !nvim/
-!bootstrap.sh
-!README.md
-!.gitignore
+!zsh/
+!tmux/**
+!vim/**
+!nvim/**
+!zsh/**
 
+# Generated / vendor plugin directories.
 tmux/.tmux/plugins/
-zsh/.oh-my-zsh/custom/plugins/
-zsh/.oh-my-zsh/custom/themes/
 vim/.vim/plugged/
 nvim/.local/share/nvim/lazy/
+zsh/.zsh/oh-my-zsh/
