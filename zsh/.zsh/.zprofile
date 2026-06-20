@@ -1,4 +1,4 @@
-# ~/.zprofile — managed by Stow from ~/dotfiles/zsh/.zprofile
+# ~/.zsh/.zprofile — managed by Stow from ~/dotfiles/zsh/.zsh/.zprofile
 # shellcheck shell=zsh
 
 # Login-shell PATH additions. zsh ties the $path array to $PATH.

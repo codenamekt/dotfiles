@@ -19,3 +19,4 @@ tmux/.tmux/plugins/
 vim/.vim/plugged/
 nvim/.local/share/nvim/lazy/
 zsh/.zsh/oh-my-zsh/
+zsh/.zsh/.zcompdump*

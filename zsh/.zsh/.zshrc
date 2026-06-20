@@ -1,4 +1,4 @@
-# ~/.zshrc — managed by Stow from ~/dotfiles/zsh/.zshrc
+# ~/.zsh/.zshrc — managed by Stow from ~/dotfiles/zsh/.zsh/.zshrc
 # shellcheck shell=zsh
 
 # Only source this file from an interactive shell.
@@ -11,8 +11,8 @@ fi
 ZDOTFILES_ZSHRC_LOADED=1
 
 # Directory where this Zsh package lives after Stow creates symlinks.
-export ZSH="${HOME}/.zsh/oh-my-zsh"
-export ZSH_CUSTOM="${HOME}/.zsh/custom"
+export ZSH="${ZDOTDIR}/oh-my-zsh"
+export ZSH_CUSTOM="${ZDOTDIR}/custom"
 
 # Keep Oh My Zsh from prompting to update during interactive sessions.
 DISABLE_AUTO_UPDATE="true"
@@ -29,7 +29,7 @@ plugins=(
 )
 
 # Modular config lives under ~/.zsh/*.zsh.
-ZSH_CONFIG_DIR="${HOME}/.zsh"
+ZSH_CONFIG_DIR="${ZDOTDIR}"
 source_if_exists() {
   [[ -r "$1" ]] && source "$1"
 }
