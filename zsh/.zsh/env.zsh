@@ -9,6 +9,7 @@ path_prepend() {
 
 path_prepend "${HOME}/.local/bin"
 path_prepend "${HOME}/bin"
+path_prepend "${HOME}/.local/share/pi-node/node-v22.22.3-linux-x64/bin"
 
 # Editors and pagers.
 export EDITOR="${EDITOR:-nvim}"
