@@ -533,4 +533,12 @@ done
 build_bat_cache
 install_tpm
 
+# Force TPM to refresh plugins immediately
+if command -v tmux >/dev/null 2>&1; then
+  echo "Reloading tmux config to install plugins..."
+  tmux source-file "${HOME}/.tmux.conf" || true
+  # Kill the server so TPM can reinitialize on next tmux start.
+  tmux kill-server 2>/dev/null || true
+fi
+
 echo "Bootstrap complete."
