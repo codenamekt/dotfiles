@@ -85,3 +85,8 @@ if [[ -n "${TTY:-}" ]]; then
 fi
 
 # Keybindings are loaded modularly from bindings.zsh & fzf.zsh
+
+# Run login script for interactive shells
+if [[ -f "${ZSH_CONFIG_DIR}/ascii_login.sh" ]]; then
+  bash "${ZSH_CONFIG_DIR}/ascii_login.sh"
+fi
