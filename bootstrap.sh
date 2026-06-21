@@ -398,6 +398,7 @@ install_bootstrap_tools() {
   install_eza
   install_nvim
   install_go
+  install_debian_package tmux
 }
 
 install_zsh() {
