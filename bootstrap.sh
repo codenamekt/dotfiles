@@ -455,7 +455,7 @@ stow_package() {
   fi
 
   echo "Stowing ${package}…"
-  stow --dotfiles -S "${package}"
+  stow --dotfiles -t ~ -S "${package}"
 }
 
 build_bat_cache() {
