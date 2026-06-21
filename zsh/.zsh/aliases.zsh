@@ -25,4 +25,4 @@ alias gl='git log --oneline --graph --decorate --max-count=20'
 alias gp='git pull --ff-only'
 
 # Dotfiles
-alias dstow='stow --dotfiles -R zsh vim tmux nvim'
+alias dstow='cd ~/dotfiles && stow --dotfiles -R zsh bat vim tmux nvim'

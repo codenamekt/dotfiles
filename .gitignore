@@ -9,10 +9,12 @@
 !vim/
 !nvim/
 !zsh/
+!bat/
 !tmux/**
 !vim/**
 !nvim/**
 !zsh/**
+!bat/**
 
 # Generated / vendor plugin directories.
 tmux/.tmux/plugins/

@@ -63,5 +63,11 @@ setopt share_history
 setopt auto_cd
 setopt extended_glob
 
+# GPG agent integration. This belongs in the interactive shell because TTY
+# only exists for interactive sessions.
+if [[ -n "${TTY:-}" ]]; then
+  export GPG_TTY="$TTY"
+fi
+
 # Keybindings
 bindkey '^R' history-incremental-search-backward

@@ -6,6 +6,7 @@ A minimal, **Stow-based** dotfiles repository.
 
 - `tmux/` – `~/.tmux.conf` and related settings.
 - `zsh/` – `~/.zshrc`, `~/.zprofile`, `~/.zshenv`, Oh My Zsh customizations, and modular Zsh config.
+- `bat/` – `bat` pager configuration using Catppuccin Mocha.
 - `vim/` – `~/.vimrc` and Vim plugins.
 - `nvim/.config/nvim/` – Neovim configuration.
 - `bootstrap.sh` – installs system packages, clones Oh My Zsh, and runs Stow for known packages.
@@ -27,10 +28,13 @@ A minimal, **Stow-based** dotfiles repository.
 
    This script is intended to be idempotent. It will:
 
-   - install `git`, `stow`, and `zsh` if they are missing on Debian/Ubuntu systems;
+   - install `git`, `stow`, `zsh`, `less`, and `bat` if they are missing on Debian/Ubuntu systems;
+   - create a `bat` command symlink when the distro package installs `batcat` instead;
    - set Zsh as the default shell when possible;
    - clone Oh My Zsh into `zsh/oh-my-zsh/`;
-   - run `stow --dotfiles -S` for `tmux`, `zsh`, `vim`, and `nvim`.
+   - clone Oh My Zsh and the Catppuccin `bat` themes;
+   - run `stow --dotfiles -S` for `tmux`, `zsh`, `bat`, `vim`, and `nvim`;
+   - build the `bat` theme cache so Catppuccin Mocha is available.
 
 3. **Refresh Stow for a single package, if needed**
 
@@ -48,11 +52,11 @@ A minimal, **Stow-based** dotfiles repository.
 
 ## Using Stow directly
 
-Each top-level folder (`tmux/`, `zsh/`, `vim/`, `nvim/`) is a Stow *package*.
+Each top-level folder (`tmux/`, `zsh/`, `bat/`, `vim/`, `nvim/`) is a Stow *package*.
 
 ```bash
 cd ~/dotfiles
-stow --dotfiles */   # or: stow --dotfiles zsh vim tmux nvim
+stow --dotfiles */   # or: stow --dotfiles zsh bat vim tmux nvim
 ```
 
 To add a new package:

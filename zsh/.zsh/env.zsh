@@ -11,7 +11,7 @@ path_prepend "${HOME}/.local/bin"
 path_prepend "${HOME}/bin"
 path_prepend "${HOME}/.local/share/pi-node/node-v22.22.3-linux-x64/bin"
 
-# Editors and pagers.
-export EDITOR="${EDITOR:-nvim}"
-export VISUAL="${VISUAL:-${EDITOR}}"
-export LESS="${LESS:--R}"
+# Less content filters.
+if command -v lesspipe >/dev/null 2>&1; then
+  export LESSOPEN="${LESSOPEN:-|lesspipe %s}"
+fi
