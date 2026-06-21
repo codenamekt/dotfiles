@@ -13,3 +13,6 @@ ZSH_COMPLETIONS_DIR="${HOME}/.zsh/completions"
 if [[ -d "${ZSH_COMPLETIONS_DIR}" ]]; then
   fpath=("${ZSH_COMPLETIONS_DIR}" "${fpath[@]}")
 fi
+
+# Enable selectable completion menu: Tab opens a list you can navigate with arrow keys.
+zstyle ':completion:*' menu select
