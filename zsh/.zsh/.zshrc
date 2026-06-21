@@ -47,7 +47,7 @@ if [[ -f "${ZSH}/oh-my-zsh.sh" ]]; then
   source "${ZSH}/oh-my-zsh.sh"
 else
   echo "⚠️  Oh My Zsh not found at ${ZSH}" >&2
-  echo "   Run: cd ~/dotfiles && ./bootstrap.sh" >&2
+  echo "   Run: cd \"\${DOTFILES_DIR}\" && ./bootstrap.sh" >&2
 fi
 
 # Load the rest of our modular config after Oh My Zsh is available.

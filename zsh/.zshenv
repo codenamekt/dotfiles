@@ -23,3 +23,12 @@ export LESS="${LESS:--R}"
 # Zsh Configuration Directory
 export ZDOTDIR="${HOME}/.zsh"
 
+# Dotfiles Directory
+if [[ -z "${DOTFILES_DIR}" ]]; then
+  if [[ -d "${HOME}/projects/dotfiles" ]]; then
+    export DOTFILES_DIR="${HOME}/projects/dotfiles"
+  else
+    export DOTFILES_DIR="${HOME}/dotfiles"
+  fi
+fi
+

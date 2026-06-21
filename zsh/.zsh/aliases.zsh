@@ -59,4 +59,4 @@ alias glog='PAGER="less -F -X" git log'                              # -F quit i
 alias gadog='PAGER="less -F -X" git log --all --decorate --oneline --graph'
 
 # Dotfiles
-alias dstow='cd ~/projects/dotfiles && stow --dotfiles -R zsh bat vim tmux nvim fsh eza'
+alias dstow='cd "${DOTFILES_DIR}" && stow --dotfiles -R zsh bat vim tmux nvim fsh eza'
