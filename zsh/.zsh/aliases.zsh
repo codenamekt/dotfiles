@@ -14,6 +14,9 @@ compdef eza=ls
 # Better cat (Bat)
 alias cat='bat'
 
+# Neovim alias
+alias vim='nvim'
+
 # Safer destructive operations
 alias cp='cp -i'
 alias mv='mv -i'
