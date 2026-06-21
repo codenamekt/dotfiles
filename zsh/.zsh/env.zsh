@@ -9,7 +9,9 @@ path_prepend() {
 
 path_prepend "${HOME}/.local/bin"
 path_prepend "${HOME}/bin"
-path_prepend "${HOME}/.local/share/pi-node/node-v22.22.3-linux-x64/bin"
+local node_arch="x64"
+[[ "$(uname -m)" == "aarch64" || "$(uname -m)" == "arm64" ]] && node_arch="arm64"
+path_prepend "${HOME}/.local/share/pi-node/node-v22.22.3-linux-${node_arch}/bin"
 
 # Less content filters.
 if command -v lesspipe >/dev/null 2>&1; then

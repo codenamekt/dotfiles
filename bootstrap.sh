@@ -383,6 +383,45 @@ install_go() {
   echo "Go installed: $(go version)"
 }
 
+install_node() {
+  local version="v22.22.3"
+  local arch
+  case "$(uname -m)" in
+    x86_64|amd64) arch="x64" ;;
+    aarch64|arm64) arch="arm64" ;;
+    *) echo "Unsupported architecture for Node.js: $(uname -m)" >&2; return 1 ;;
+  esac
+
+  local node_dir="${HOME}/.local/share/pi-node/node-${version}-linux-${arch}"
+  if [[ -d "${node_dir}/bin" ]]; then
+    echo "Node.js is already installed at ${node_dir}"
+    return 0
+  fi
+
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required for Node.js install." >&2
+    return 1
+  fi
+
+  local tarball="node-${version}-linux-${arch}.tar.xz"
+  local url="https://nodejs.org/dist/${version}/${tarball}"
+  local tmp
+  tmp="$(mktemp -d)"
+
+  echo "Downloading Node.js ${version} from ${url}…"
+  if curl -fsSL "${url}" -o "${tmp}/${tarball}"; then
+    mkdir -p "$(dirname "${node_dir}")"
+    tar -xf "${tmp}/${tarball}" -C "$(dirname "${node_dir}")"
+    echo "Node.js installed successfully to ${node_dir}"
+    rm -rf "${tmp}"
+    return 0
+  fi
+
+  rm -rf "${tmp}"
+  echo "Failed to download Node.js" >&2
+  return 1
+}
+
 install_bootstrap_tools() {
   install_debian_package git
   install_debian_package stow
@@ -398,6 +437,7 @@ install_bootstrap_tools() {
   install_eza
   install_nvim
   install_go
+  install_node
   install_debian_package tmux
 }
 
