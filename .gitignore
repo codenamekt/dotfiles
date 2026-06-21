@@ -10,11 +10,15 @@
 !nvim/
 !zsh/
 !bat/
+!fsh/
+!eza/
 !tmux/**
 !vim/**
 !nvim/**
 !zsh/**
 !bat/**
+!fsh/**
+!eza/**
 
 # Generated / vendor plugin directories.
 tmux/.tmux/plugins/
@@ -22,3 +26,19 @@ vim/.vim/plugged/
 nvim/.local/share/nvim/lazy/
 zsh/.zsh/oh-my-zsh/
 zsh/.zsh/.zcompdump*
+zsh/.zsh/custom/plugins/zsh-autosuggestions/
+zsh/.zsh/custom/plugins/zsh-history-substring-search/
+zsh/.zsh/custom/plugins/zsh-vi-mode/
+zsh/.zsh/custom/plugins/fast-syntax-highlighting/
+
+# Shell and REPL histories.
+.zsh_history
+.zsh_history.*
+.bash_history
+.bash_history.*
+.fish_history
+.fish_history.*
+.nushell/history.txt
+.nushell/history.txt.*
+.python_history
+.node_repl_history

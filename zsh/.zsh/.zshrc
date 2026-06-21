@@ -23,9 +23,13 @@ ZSH_THEME="mytheme"
 # Plugins: official Oh My Zsh plugins + our local dotfiles plugin.
 plugins=(
   git
-  z
   docker
+  zoxide
+  zsh-autosuggestions
+  zsh-history-substring-search
+  zsh-vi-mode
   dotfiles
+  fast-syntax-highlighting
 )
 
 # Modular config lives under ~/.zsh/*.zsh.
@@ -47,21 +51,30 @@ else
 fi
 
 # Load the rest of our modular config after Oh My Zsh is available.
+source_if_exists "${ZSH_CONFIG_DIR}/fzf.zsh"
 source_if_exists "${ZSH_CONFIG_DIR}/aliases.zsh"
+source_if_exists "${ZSH_CONFIG_DIR}/bindings.zsh"
 source_if_exists "${ZSH_CONFIG_DIR}/functions.zsh"
 
 # History
-HISTFILE="${HISTFILE:-${HOME}/.zsh_history}"
-HISTSIZE=10000
-SAVEHIST=10000
+HISTFILE="${XDG_STATE_HOME:-${HOME}/.local/state}/zsh/history"
+mkdir -p "${HISTFILE:h}"
+HISTSIZE=100000
+SAVEHIST=100000
 setopt append_history
 setopt extended_history
+setopt hist_expire_dups_first
+setopt hist_find_no_dups
+setopt hist_ignore_dups
+setopt hist_ignore_space
 setopt inc_append_history
 setopt share_history
 
 # Shell behavior
 setopt auto_cd
 setopt extended_glob
+setopt no_beep
+setopt numeric_glob_sort
 
 # GPG agent integration. This belongs in the interactive shell because TTY
 # only exists for interactive sessions.
@@ -69,5 +82,4 @@ if [[ -n "${TTY:-}" ]]; then
   export GPG_TTY="$TTY"
 fi
 
-# Keybindings
-bindkey '^R' history-incremental-search-backward
+# Keybindings are loaded modularly from bindings.zsh & fzf.zsh

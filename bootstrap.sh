@@ -12,7 +12,8 @@ CATPPUCCIN_BAT_REPO="https://github.com/catppuccin/bat.git"
 
 install_debian_package() {
   local package="$1"
-  if command -v "${package}" >/dev/null 2>&1; then
+  local cmd="${2:-$package}"
+  if command -v "${cmd}" >/dev/null 2>&1; then
     return 0
   fi
 
@@ -50,6 +51,33 @@ ensure_bat_command() {
   else
     mkdir -p "${link_dir}"
     ln -sf "${batcat_path}" "${link_dir}/bat"
+  fi
+}
+
+ensure_fd_command() {
+  if command -v fd >/dev/null 2>&1; then
+    return 0
+  fi
+
+  local fdfind_path
+  fdfind_path="$(command -v fdfind 2>/dev/null || true)"
+  if [[ -z "${fdfind_path}" ]]; then
+    echo "fdfind was not found after installing fd-find." >&2
+    return 1
+  fi
+
+  local link_dir="/usr/local/bin"
+  if [[ ! -w "${link_dir}" ]]; then
+    link_dir="${HOME}/.local/bin"
+  fi
+
+  echo "Creating ${link_dir}/fd symlink to ${fdfind_path}…"
+  if [[ "${link_dir}" == "/usr/local/bin" ]]; then
+    sudo mkdir -p "${link_dir}"
+    sudo ln -sf "${fdfind_path}" "${link_dir}/fd"
+  else
+    mkdir -p "${link_dir}"
+    ln -sf "${fdfind_path}" "${link_dir}/fd"
   fi
 }
 
@@ -118,6 +146,75 @@ install_bat() {
   ensure_bat_command
 }
 
+install_zoxide_with_apt() {
+  if ! command -v apt-get >/dev/null 2>&1; then
+    return 1
+  fi
+
+  if ! command -v sudo >/dev/null 2>&1 || ! sudo -n true >/dev/null 2>&1; then
+    echo "Passwordless sudo is not available; falling back to a local zoxide install." >&2
+    return 1
+  fi
+
+  echo "Installing zoxide with apt…"
+  sudo apt-get update
+  sudo apt-get install -y zoxide
+}
+
+install_zoxide_local() {
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required for the local zoxide install fallback." >&2
+    return 1
+  fi
+
+  local latest_version
+  latest_version="$(curl -fsSL https://api.github.com/repos/ajeetdsouza/zoxide/releases/latest | sed -n 's/.*"tag_name": "v\([^"]*\)".*/\1/p')"
+  local version="${ZOXIDE_VERSION:-${latest_version}}"
+  if [[ -z "${version}" ]]; then
+    echo "Unable to determine latest zoxide version." >&2
+    return 1
+  fi
+
+  local arch
+  case "$(uname -m)" in
+    x86_64|amd64)
+      arch="x86_64-unknown-linux-musl"
+      ;;
+    aarch64|arm64)
+      arch="aarch64-unknown-linux-musl"
+      ;;
+    *)
+      echo "Unsupported architecture for local zoxide install: $(uname -m)" >&2
+      return 1
+      ;;
+  esac
+
+  local asset="zoxide-${version}-${arch}.tar.gz"
+  local url="https://github.com/ajeetdsouza/zoxide/releases/download/v${version}/${asset}"
+  local tmp
+  tmp="$(mktemp -d)"
+
+  echo "Installing zoxide locally from ${url}…"
+  curl -fsSL "${url}" -o "${tmp}/${asset}" || return 1
+  tar -xzf "${tmp}/${asset}" -C "${tmp}" || return 1
+  mkdir -p "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/zoxide" "${HOME}/.local/bin/zoxide" || return 1
+  rm -rf "${tmp}"
+}
+
+install_zoxide() {
+  if command -v zoxide >/dev/null 2>&1; then
+    echo "zoxide is already installed: $(command -v zoxide)"
+    return 0
+  fi
+
+  if install_zoxide_with_apt; then
+    return 0
+  fi
+
+  install_zoxide_local
+}
+
 install_manpager_tools() {
   if command -v col >/dev/null 2>&1; then
     return 0
@@ -133,12 +230,73 @@ install_manpager_tools() {
   fi
 }
 
+install_eza_local() {
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required for the local eza install." >&2
+    return 1
+  fi
+
+  local latest_version
+  latest_version="$(curl -fsSL https://api.github.com/repos/eza-community/eza/releases/latest | sed -n 's/.*"tag_name": "v\([^"]*\)".*/\1/p')"
+  local version="${EZA_VERSION:-${latest_version}}"
+  if [[ -z "${version}" ]]; then
+    echo "Unable to determine latest eza version." >&2
+    return 1
+  fi
+
+  local arch
+  case "$(uname -m)" in
+    x86_64|amd64)
+      arch="x86_64-unknown-linux-gnu"
+      ;;
+    aarch64|arm64)
+      arch="aarch64-unknown-linux-gnu"
+      ;;
+    *)
+      echo "Unsupported architecture for local eza install: $(uname -m)" >&2
+      return 1
+      ;;
+  esac
+
+  local asset="eza_${arch}.tar.gz"
+  local url="https://github.com/eza-community/eza/releases/download/v${version}/${asset}"
+  local tmp
+  tmp="$(mktemp -d)"
+
+  echo "Installing eza locally from ${url}…"
+  curl -fsSL "${url}" -o "${tmp}/${asset}" || return 1
+  tar -xzf "${tmp}/${asset}" -C "${tmp}" || return 1
+  mkdir -p "${HOME}/.local/bin"
+  install -m 0755 "${tmp}/eza" "${HOME}/.local/bin/eza" || return 1
+  rm -rf "${tmp}"
+}
+
+install_eza() {
+  if command -v eza >/dev/null 2>&1; then
+    local current_ver
+    current_ver="$(eza --version | head -n1 | awk '{print $2}')"
+    if [[ "${current_ver}" == v0.2[3-9]* || "${current_ver}" == v0.23* ]]; then
+      echo "A modern eza is already installed: ${current_ver}"
+      return 0
+    fi
+  fi
+
+  install_eza_local
+}
+
 install_bootstrap_tools() {
   install_debian_package git
   install_debian_package stow
   install_debian_package less
+  install_zoxide
   install_manpager_tools
   install_bat
+  install_debian_package fzf
+  install_debian_package ripgrep rg
+  if install_debian_package fd-find fdfind; then
+    ensure_fd_command
+  fi
+  install_eza
 }
 
 install_zsh() {
@@ -212,13 +370,43 @@ build_bat_cache() {
   bat cache --build --source "${HOME}/.config/bat/themes/catppuccin"
 }
 
+clone_custom_plugins() {
+  local plugins_dir="${DIR}/zsh/.zsh/custom/plugins"
+  mkdir -p "${plugins_dir}"
+
+  # Clone zsh-autosuggestions
+  if [[ ! -d "${plugins_dir}/zsh-autosuggestions/.git" ]]; then
+    echo "Cloning zsh-autosuggestions…"
+    git clone --depth 1 https://github.com/zsh-users/zsh-autosuggestions.git "${plugins_dir}/zsh-autosuggestions"
+  fi
+
+  # Clone zsh-history-substring-search
+  if [[ ! -d "${plugins_dir}/zsh-history-substring-search/.git" ]]; then
+    echo "Cloning zsh-history-substring-search…"
+    git clone --depth 1 https://github.com/zsh-users/zsh-history-substring-search.git "${plugins_dir}/zsh-history-substring-search"
+  fi
+
+  # Clone zsh-vi-mode
+  if [[ ! -d "${plugins_dir}/zsh-vi-mode/.git" ]]; then
+    echo "Cloning zsh-vi-mode…"
+    git clone --depth 1 https://github.com/jeffreytse/zsh-vi-mode.git "${plugins_dir}/zsh-vi-mode"
+  fi
+
+  # Clone fast-syntax-highlighting
+  if [[ ! -d "${plugins_dir}/fast-syntax-highlighting/.git" ]]; then
+    echo "Cloning fast-syntax-highlighting…"
+    git clone --depth 1 https://github.com/zdharma-continuum/fast-syntax-highlighting.git "${plugins_dir}/fast-syntax-highlighting"
+  fi
+}
+
 install_bootstrap_tools
 install_zsh
 clone_oh_my_zsh
+clone_custom_plugins
 clone_catppuccin_bat_themes
 
 # Stow all known packages. Run `stow --dotfiles zsh` manually if you only want to refresh Zsh.
-for package in tmux zsh bat vim nvim; do
+for package in tmux zsh bat vim nvim fsh eza; do
   stow_package "${package}"
 done
 
