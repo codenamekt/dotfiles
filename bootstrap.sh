@@ -547,4 +547,6 @@ if command -v tmux >/dev/null 2>&1; then
   tmux kill-server 2>/dev/null || true
 fi
 
+echo "export DOTFILES_DIR=\"${DIR}\"" > "${HOME}/.zshenv.local"
+
 echo "Bootstrap complete."

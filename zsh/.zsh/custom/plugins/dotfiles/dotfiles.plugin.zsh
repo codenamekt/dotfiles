@@ -2,7 +2,7 @@
 # shellcheck shell=zsh
 
 function dotfiles {
-  local repo="${HOME}/dotfiles"
+  local repo="${DOTFILES_DIR}"
   local command="${1:-help}"
 
   case "${command}" in
