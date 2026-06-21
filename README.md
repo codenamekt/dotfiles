@@ -8,7 +8,7 @@ A minimal, **Stow-based** dotfiles repository.
 - `zsh/` – `~/.zshrc`, `~/.zprofile`, `~/.zshenv`, Oh My Zsh customizations, and modular Zsh config.
 - `bat/` – `bat` pager configuration using Catppuccin Mocha.
 - `vim/` – `~/.vimrc` and Vim plugins.
-- `nvim/.config/nvim/` – Neovim configuration.
+- `nvim/.config/nvim/` – Neovim configuration with Lazy.nvim, Catppuccin Mocha, LSP, Treesitter, Telescope, Git helpers, and homelab-oriented syntax extras.
 - `fsh/` – `fast-syntax-highlighting` custom theme configs (Catppuccin Mocha).
 - `eza/` – `eza` custom theme configurations (Catppuccin Mocha Lavender).
 - `bootstrap.sh` – installs system packages, clones Oh My Zsh, and runs Stow for known packages.
@@ -30,11 +30,11 @@ A minimal, **Stow-based** dotfiles repository.
 
    This script is intended to be idempotent. It will:
 
-   - install `git`, `stow`, `zsh`, `less`, `zoxide`, and `bat` if they are missing on Debian/Ubuntu systems;
+   - install `git`, `stow`, `zsh`, `less`, `zoxide`, `bat`, `fzf`, `ripgrep`, `fd`, `eza`, and `neovim` if they are missing on Debian/Ubuntu systems;
    - create a `bat` command symlink when the distro package installs `batcat` instead;
    - set Zsh as the default shell when possible;
    - clone Oh My Zsh into `zsh/oh-my-zsh/` and the Catppuccin `bat` themes;
-   - run `stow --dotfiles -S` for `tmux`, `zsh`, `bat`, `vim`, and `nvim`;
+   - run `stow --dotfiles -S` for `tmux`, `zsh`, `bat`, `vim`, `nvim`, `fsh`, and `eza`;
    - build the `bat` theme cache so Catppuccin Mocha is available.
 
 3. **Refresh Stow for a single package, if needed**
@@ -118,7 +118,7 @@ The local `dotfiles` Oh My Zsh plugin adds a small helper:
 ```bash
 dotfiles status   # show ~/dotfiles status
 dotfiles pull     # fast-forward pull ~/dotfiles
-dotfiles stow     # re-apply Stow links for zsh, vim, tmux, and nvim
+dotfiles stow     # re-apply Stow links for zsh, bat, vim, tmux, nvim, fsh, and eza
 dotfiles reload   # alias for `dotfiles stow`
 ```
 
@@ -130,6 +130,39 @@ dotfiles reload   # alias for `dotfiles stow`
 - Put completion path setup in `zsh/.zsh/completions.zsh`.
 - Add custom themes under `zsh/custom/themes/`.
 - Add custom plugins under `zsh/custom/plugins/<plugin>/<plugin>.plugin.zsh`.
+
+## Neovim
+
+Neovim is managed by [Lazy.nvim](https://github.com/folke/lazy.nvim). The first run will clone Lazy, then install the configured plugins under:
+
+```text
+~/.local/share/nvim/lazy/
+```
+
+The configuration includes:
+
+- **Catppuccin Mocha** as the default colorscheme.
+- **LSP + Mason** with servers for Bash, Dockerfile, Go, JSON, Lua, Markdown, Python, TypeScript/JavaScript, and YAML.
+- **Treesitter** for syntax highlighting, indentation, and text objects.
+- **Telescope** for fuzzy finding, live grep, buffers, symbols, and keymaps.
+- **Git helpers** with Gitsigns and Fugitive.
+- **Editor niceties** such as Which-Key, Comment, nvim-surround, autopairs, Oil file browser, Noice, Todo comments, Trouble, Lualine, Bufferline, and Zen Mode.
+- **Homelab extras** for PlantUML/Markdown diagrams, Terraform, and Ansible-style YAML.
+
+Useful defaults:
+
+| Key | Action |
+|---|---|
+| `<Space>ff` | Find files |
+| `<Space>fg` | Live grep |
+| `<Space>fb` | Buffers |
+| `<Space>fs` | LSP document symbols |
+| `<Space>fw` | LSP workspace symbols |
+| `<Space>e` | Oil file explorer |
+| `<Space>ghs` | Stage Git hunk |
+| `<Space>ghr` | Reset Git hunk |
+| `<Space>cf` | Format buffer via LSP |
+| `<Space>xx` | Toggle diagnostics in Trouble |
 
 ## Cheatsheet: Keybindings, Commands, and Aliases
 

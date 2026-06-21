@@ -70,6 +70,8 @@ setopt hist_ignore_space
 setopt inc_append_history
 setopt share_history
 
+source_if_exists "${ZSH_CONFIG_DIR}/history.zsh"
+
 # Shell behavior
 setopt auto_cd
 setopt extended_glob

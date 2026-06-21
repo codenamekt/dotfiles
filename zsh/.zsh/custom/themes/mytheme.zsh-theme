@@ -13,7 +13,7 @@ function prompt_git_info {
 ZSH_THEME_GIT_PROMPT_PREFIX="%F{#94e2d5}❯%f%F{#cdd6f4}"
 ZSH_THEME_GIT_PROMPT_SUFFIX=""
 ZSH_THEME_GIT_PROMPT_DIRTY="%f%F{#f38ba8}✘%f"
-ZSH_THEME_GIT_PROMPT_CLEAN="%f%F{#a6e3a1}✔%f"
+ZSH_THEME_GIT_PROMPT_CLEAN="%f%F{#a6e3a1}•%f"
 
 # Custom prompt layout: Bright White Cross, Lavender Path, Teal/Text Git Info, and Blue Hostname on right
 PROMPT=' %F{15}✟%f %B%F{#b4befe}%1~%f%b$(prompt_git_info) '

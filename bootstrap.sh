@@ -284,6 +284,105 @@ install_eza() {
   install_eza_local
 }
 
+install_nvim() {
+  if command -v nvim >/dev/null 2>&1 && _nvim_version_ok; then
+    echo "Neovim is already installed and new enough: $(nvim --version | head -n1)"
+    return 0
+  fi
+
+  if command -v nvim >/dev/null 2>&1; then
+    echo "Neovim is too old ($(nvim --version | head -n1)), upgrading…"
+  fi
+
+  # Try the Neovim unstable PPA (stable PPA doesn't ship neovim for noble).
+  if command -v add-apt-repository >/dev/null 2>&1; then
+    # Remove the old stable PPA source if present.
+    sudo rm -f /etc/apt/sources.list.d/neovim-ppa-ubuntu-stable-noble.sources
+    DEBIAN_FRONTEND=noninteractive sudo add-apt-repository -y -n ppa:neovim-ppa/unstable 2>/dev/null &&
+      sudo apt-get update -qq &&
+      echo "Installing Neovim from PPA…" &&
+      sudo apt-get install -y neovim &&
+      echo "Neovim upgraded: $(nvim --version | head -n1)" &&
+      return 0
+  fi
+
+  # Fallback: download the AppImage, retrying a few times.
+  local appimage="${HOME}/.local/bin/nvim"
+  mkdir -p "${HOME}/.local/bin"
+  echo "Downloading Neovim AppImage…"
+  for try in 1 2 3; do
+    if curl -fsSL --connect-timeout 10 --retry 2 \
+      "https://github.com/neovim/neovim/releases/latest/download/nvim.appimage" \
+      -o "${appimage}" 2>/dev/null; then
+      chmod +x "${appimage}"
+      echo "Neovim AppImage installed to ${appimage}"
+      return 0
+    fi
+    sleep 2
+  done
+
+  # If everything failed, install the apt version (even if old) so nvim is available.
+  echo "PPA and AppImage both failed. Falling back to apt (may be older)."
+  install_debian_package neovim nvim
+}
+
+# Check that Neovim version >= 0.11 (major.minor comparison).
+_nvim_version_ok() {
+  local ver_str major minor
+  ver_str="$(nvim --version | head -n1 | sed 's/^NVIM v//')"
+  major="${ver_str%%.*}"
+  minor="${ver_str#*.}"
+  minor="${minor%%.*}"
+  [[ "$major" -gt 0 || ( "$major" -eq 0 && "$minor" -ge 11 ) ]]
+}
+
+install_go() {
+  if command -v go >/dev/null 2>&1; then
+    local ver
+    ver="$(go version 2>/dev/null | grep -oP 'go[0-9]+\.[0-9]+' || true)"
+    echo "Go is already installed: ${ver}"
+    return 0
+  fi
+
+  # Try apt first.
+  if command -v apt-get >/dev/null 2>&1; then
+    echo "Installing golang-go with apt…"
+    sudo apt-get update
+    sudo apt-get install -y golang-go
+    if command -v go >/dev/null 2>&1; then
+      echo "Go installed: $(go version)"
+      return 0
+    fi
+  fi
+
+  # Fallback: download latest from go.dev.
+  if ! command -v curl >/dev/null 2>&1; then
+    echo "curl is required for Go install fallback." >&2
+    return 1
+  fi
+
+  local arch
+  case "$(uname -m)" in
+    x86_64|amd64) arch="amd64" ;;
+    aarch64|arm64) arch="arm64" ;;
+    *) echo "Unsupported architecture: $(uname -m)" >&2; return 1 ;;
+  esac
+
+  local version="${GO_VERSION:-1.23.4}"
+  local tarball="go${version}.linux-${arch}.tar.gz"
+  local url="https://go.dev/dl/${tarball}"
+
+  echo "Downloading Go ${version} from ${url}…"
+  curl -fsSL "${url}" | sudo tar -C /usr/local -xz || return 1
+
+  # Symlink so /usr/local/go/bin/go is in PATH.
+  if [[ ! -f "/usr/local/bin/go" ]]; then
+    sudo ln -sf /usr/local/go/bin/go /usr/local/bin/go
+  fi
+
+  echo "Go installed: $(go version)"
+}
+
 install_bootstrap_tools() {
   install_debian_package git
   install_debian_package stow
@@ -297,6 +396,8 @@ install_bootstrap_tools() {
     ensure_fd_command
   fi
   install_eza
+  install_nvim
+  install_go
 }
 
 install_zsh() {

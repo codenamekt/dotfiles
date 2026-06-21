@@ -7,7 +7,7 @@ function dotfiles {
 
   case "${command}" in
     stow|reload)
-      stow --dotfiles -R zsh vim tmux nvim
+      stow --dotfiles -R zsh bat vim tmux nvim fsh eza
       ;;
     pull)
       git -C "${repo}" pull --ff-only
@@ -20,7 +20,7 @@ function dotfiles {
 Usage: dotfiles <command>
 
 Commands:
-  stow, reload  Re-apply Stow symlinks for zsh, vim, tmux, and nvim.
+  stow, reload  Re-apply Stow symlinks for zsh, bat, vim, tmux, nvim, fsh, and eza.
   pull          Pull the dotfiles repository with a fast-forward only.
   status        Show dotfiles repository status.
   help          Show this help.

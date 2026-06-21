@@ -14,6 +14,12 @@ ZVM_VI_HIGHLIGHT_EXTRASTYLE=none
 # zsh-vi-mode resets all bindings on init, so custom bindings
 # must be registered via this hook to survive.
 zvm_after_init() {
+  # Tab -> accept the displayed zsh-autosuggestions suggestion.
+  zvm_bindkey viins '^I' autosuggest-accept
+
+  # Right arrow -> trigger completion instead of accepting the suggestion.
+  zvm_bindkey viins '^[[C' expand-or-complete
+
   # Ctrl+Right -> move forward one word (^[[1;5C is the terminal escape code)
   bindkey '^[[1;5C' forward-word
 
