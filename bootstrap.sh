@@ -472,6 +472,24 @@ build_bat_cache() {
   bat cache --build --source "${HOME}/.config/bat/themes/catppuccin"
 }
 
+install_tpm() {
+  local tpm_dir="${HOME}/.tmux/plugins/tpm"
+
+  if [[ -d "${tpm_dir}/.git" ]]; then
+    echo "TPM is already installed at ${tpm_dir}"
+    git -C "${tpm_dir}" pull --ff-only || true
+  else
+    echo "Installing TPM to ${tpm_dir}..."
+    mkdir -p "$(dirname "${tpm_dir}")"
+    git clone https://github.com/tmux-plugins/tpm "${tpm_dir}"
+  fi
+
+  if command -v tmux >/dev/null 2>&1 && [[ -f "${HOME}/.tmux.conf" ]]; then
+    echo "Loading tmux config to install plugins..."
+    tmux source-file "${HOME}/.tmux.conf" || true
+  fi
+}
+
 clone_custom_plugins() {
   local plugins_dir="${DIR}/zsh/.zsh/custom/plugins"
   mkdir -p "${plugins_dir}"
@@ -513,5 +531,6 @@ for package in tmux zsh bat vim nvim fsh eza; do
 done
 
 build_bat_cache
+install_tpm
 
 echo "Bootstrap complete."
