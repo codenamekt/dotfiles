@@ -20,6 +20,9 @@
 !fsh/**
 !eza/**
 
+# Ignore bat themes folder (specific subdirectory)
+../../bat/.config/bat/themes/
+
 # Generated / vendor plugin directories.
 tmux/.tmux/plugins/
 vim/.vim/plugged/
