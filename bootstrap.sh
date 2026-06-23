@@ -439,6 +439,7 @@ install_bootstrap_tools() {
   install_go
   install_node
   install_debian_package tmux
+  install_debian_package wl-clipboard wl-copy
 }
 
 install_zsh() {
