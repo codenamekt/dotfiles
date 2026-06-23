@@ -30,6 +30,7 @@ zsh/.zsh/custom/plugins/zsh-autosuggestions/
 zsh/.zsh/custom/plugins/zsh-history-substring-search/
 zsh/.zsh/custom/plugins/zsh-vi-mode/
 zsh/.zsh/custom/plugins/fast-syntax-highlighting/
+bat/.config/bat/themes/catppuccin/
 
 # Shell and REPL histories.
 .zsh_history
